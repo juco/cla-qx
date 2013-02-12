@@ -5,27 +5,54 @@
 class QxGrammar {
 
 	protected $components = array(
-		'selects', 'from', 'joins', 'wheres', 'groupings', 'havings', 'orderings', 'limit', 'offset'
+		'selects', 'from', 'joins', 'wheres', 'groupings', 'havings',
+		'orderings', 'limit', 'offset'
 	);
 
-	public function select(QxQuery $query)
+	/**
+	 * Perform a SELECT statement
+	 *
+	 * @param  QxQuery $query The query
+	 * @return string
+	 */
+	public function Select(QxQuery $query)
 	{
-		return $this->concatenate($this->components($query));
+		return $this->Concatenate($this->Components($query));
 	}
 
-	public function selects(QxQuery $query)
+	public function Insert(QxQuery $query) {
+		 // TODO
+	}
+
+	public function Update(QxQuery $query) {
+		// TODO
+	}
+
+	public function Selects(QxQuery $query)
 	{
 		$select = ($query->distinct) ? 'SELECT DISTINCT ' : 'SELECT ';
 
 		return $select.$this->columnize($query->selects);
 	}
 
-	public function from(QxQuery $query)
+	/**
+	 * From where?
+	 *
+	 * @param  QxQuery $query 
+	 * @return string
+	 */
+	public function From(QxQuery $query)
 	{
 		return 'FROM '. $query->from['from']. ' ' .$query->from['alias'] ?: '';
 	}
 
-	public function wheres(QxQuery $query)
+	/**
+	 * Process WHERE clauses
+	 *
+	 * @string  QxQuery $query The query
+	 * @return string
+	 */
+	public function Wheres(QxQuery $query)
 	{
 		if(is_null($query->wheres)) return '';
 
@@ -40,19 +67,34 @@ class QxGrammar {
 	}
 
 	/**
-	 * A basic where clause
+	 * A basic Where clause
+	 *
+	 * @param  array $where Where conditions
+	 * @return string
 	 */
 	protected function Where($where)
 	{
 		return "{$where['column']} {$where['operator']} {$where['value']}";
 	}
 
+	/**
+	 * A nested Where
+	 *
+	 * @param  array $where Where conditions
+	 * @return string
+	 */
 	protected function WhereNested($where)
 	{
 		return '('.substr($this->wheres($where['query']), 6).')';
 	}
 
-	protected function where_in($where)
+	/**
+	 * WHERE IN()
+	 *
+	 * @param  array $where Conditions
+	 * @return string
+	 */
+	protected function WhereIn($where)
 	{
 		$ret = $where['column'] . ($where['not'] ? ' NOT': '') . ' IN (';
 		switch(gettype($where['value'])) {
@@ -73,6 +115,12 @@ class QxGrammar {
 		return $ret.')';
 	}
 
+	/**
+	 * Process Join conditions
+	 *
+	 * @param  QxQuery $query
+	 * @return string
+	 */
 	protected function Joins(QxQuery $query)
 	{
 		// We need to iterate through each JOIN clause that is attached to the
@@ -122,12 +170,12 @@ class QxGrammar {
 		return implode(' ', $sql);
 	}
 
-	protected function groupings(QxQuery $query)
+	protected function Groupings(QxQuery $query)
 	{
 		return 'GROUP BY ' . $this->columnize($query->groupings);
 	}
 
-	protected function orderings(QxQuery $query)
+	protected function Orderings(QxQuery $query)
 	{
 		foreach($query->orderings as $order)
 		{
@@ -137,12 +185,12 @@ class QxGrammar {
 		return 'ORDER BY ' . implode(', ', $sql);
 	}
 
-	protected function limit(QxQuery $query)
+	protected function Limit(QxQuery $query)
 	{
 		return 'LIMIT '.$query->limit;
 	}
 
-	protected function offset(QxQuery $query)
+	protected function Offset(QxQuery $query)
 	{
 		return 'OFFSET '.$query->offset;
 	}
@@ -158,7 +206,7 @@ class QxGrammar {
 	 * @param 	array $components Components received from $this->components()
 	 * @return 	string
 	 */
-	final protected function concatenate($components)
+	final protected function Concatenate($components)
 	{
 		return implode(' ', array_filter($components, function($value) {
 			return (string) $value !== '';
@@ -171,21 +219,21 @@ class QxGrammar {
 	 * @param 	array 	component
 	 * @return 	array
 	 */
-	final protected function components(QxQuery $query)
+	final protected function Components(QxQuery $query)
 	{
 		$sql = array();
 		foreach($this->components as $component)
 		{
 			if( ! is_null($query->$component) )
 			{
-				$sql[$component] = call_user_func(array($this, $component), $query);
+				$sql[$component] = call_user_func(array($this, self::UnderscoreToCamel($component)), $query);
 			}
 		}
 
 		return $sql;
 	}
 
-	final protected function columnize($columns)
+	final protected function Columnize($columns)
 	{
 		// Do our best to check if this is non-associative
 		if(array_keys($columns) === range(0, count($columns) - 1))
@@ -217,8 +265,24 @@ class QxGrammar {
 		}
 	}
 
-	public static function ToUpperCase($value)
+	/**
+	 * Convert strings_with_underscores to CamelCase
+	 *
+	 * @param  string $value The string
+	 * @return string
+	 */
+	public static function UnderscoreToCamel($value)
 	{
-		
+		return str_replace(" ", "", ucwords(str_replace("_", " ", $value)));
+	}
+	/**
+	 * Convert UpperCamelCase to an_underscored_string
+	 *
+	 * @param  string  $value The string
+	 * @return string
+	 */
+	public static function CamelToUnderscore($value)
+	{
+		return strtolower(trim(preg_replace("/([A-Z])/", '_$1', $class), "_"));
 	}
 }

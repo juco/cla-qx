@@ -2,7 +2,7 @@
 /**
  * The QxModel ORM Class
  */
-class QxModel extends ErrorHandler {
+abstract class QxModel extends ErrorHandler {
 
 	public $exists;
 

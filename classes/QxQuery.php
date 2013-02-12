@@ -35,7 +35,7 @@ class QxQuery {
 		return new static();
 	}
 
-	public function select($columns = array('*'))
+	public function Select($columns = array('*'))
 	{
 		// Been given a string? Explode it!
 		if(is_string($columns))
@@ -56,13 +56,13 @@ class QxQuery {
 		return $this;
 	}
 
-	public function from($from, $alias = null)
+	public function From($from, $alias = null)
 	{
 		$this->from = compact('from', 'alias');
 		return $this;
 	}
 
-	public function where($column, $operator = null, $value = null, $connector = 'AND')
+	public function Where($column, $operator = null, $value = null, $connector = 'AND')
 	{
 		$type = 'where';
 
@@ -73,19 +73,19 @@ class QxQuery {
 		return $this;
 	}
 
-	public function and_where($column, $operator = null, $value = null)
+	public function AndWhere($column, $operator = null, $value = null)
 	{
 		return $this->where($column, $operator, $value, 'AND');
 	}
 
-	public function or_where($column, $operator = null, $value = null)
+	public function ORWhere($column, $operator = null, $value = null)
 	{
 		return $this->where($column, $operator, $value, 'OR');
 	}
 
 	public function WhereNested($callback, $connector = 'AND')
 	{
-		$type = 'where_nested';
+		$type = 'whereNested';
 
 		// To handle a nested where statement, we will actually instantiate a new
 		// Query instance and run the callback over that instance, which will
@@ -114,7 +114,7 @@ class QxQuery {
 	* @param  string $connector The Connector AND/OR
 	* @return QxQuery
 	*/
-	public function where_not_null($column, $connector = 'AND')
+	public function WhereNotNull($column, $connector = 'AND')
 	{
 		return $this->where($column, 'IS NOT', 'NULL', $connector);
 	}
@@ -126,7 +126,7 @@ class QxQuery {
 	* @param  string $connector The Connector AND/OR
 	* @return QxQuery
 	*/
-	public function where_null($column, $connector = 'AND')
+	public function WhereNull($column, $connector = 'AND')
 	{
 		return $this->where($column, 'IS', 'NULL', $connector);
 	}
@@ -140,7 +140,7 @@ class QxQuery {
 	* @param  bool $not NOT IN
 	* @return QxQuery
 	*/
-	public function where_in($column, $value, $connector = 'AND', $not = false)
+	public function WhereIn($column, $value, $connector = 'AND', $not = false)
 	{
 		$type = 'where_in';
 
@@ -160,7 +160,7 @@ class QxQuery {
 	 * @param  string  $alias
 	 * @return QxQuery
 	 */
-	public function joinQx($table, $column1, $operator = null, $column2 = null, $type = 'INNER', $alias = null)
+	public function JoinQx($table, $column1, $operator = null, $column2 = null, $type = 'INNER', $alias = null)
 	{
 
 		// Check if alias exists
@@ -188,7 +188,7 @@ class QxQuery {
 	 * @param  string  $type
 	 * @return QxQuery
 	 */
-	public function join($table, $column1, $operator = null, $column2 = null, $type = 'INNER')
+	public function Join($table, $column1, $operator = null, $column2 = null, $type = 'INNER')
 	{
 		// If the "column" is really an instance of a Closure, the developer is
 		// trying to create a join with a complex "ON" clause. So, we will add
@@ -215,38 +215,38 @@ class QxQuery {
 		return $this;
 	}
 
-	public function group_by($column)
+	public function GroupBy($column)
 	{
 		if(is_array($column)) $this->groupings = array_merge((array)$this->groupings, $column);
 		if(is_string($column)) $this->groupings[] = $column;
 		return $this;
 	}
 
-	public function order_by($column, $direction = 'asc')
+	public function OrderBy($column, $direction = 'asc')
 	{
 		$this->orderings[] = compact('column', 'direction');
 		return $this;
 	}
 
-	public function limit($limit)
+	public function Limit($limit)
 	{
 		$this->limit = $limit;
 		return $this;
 	}
 
-	public function offset($offset = 0)
+	public function Offset($offset = 0)
 	{
 		$this->offset = $offset;
 		return $this;
 	}
 
-	public function first($column = array('*'))
+	public function First($column = array('*'))
 	{
 		$res = $this->limit(1)->get();
 		return $res[0] ?: null;
 	}
 
-	public function get($columns = array('*'))
+	public function Get($columns = array('*'))
 	{
 		global $db;
 
