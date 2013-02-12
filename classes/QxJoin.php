@@ -39,7 +39,7 @@ class QxJoin extends QxQuery {
 	}
 
 	/**
-	 * Add an ON clause to the join.
+	 * Add an ON clause to the join
 	 *
 	 * @param  string  $column1
 	 * @param  string  $operator
@@ -47,7 +47,7 @@ class QxJoin extends QxQuery {
 	 * @param  string  $connector
 	 * @return Join
 	 */
-	public function on($column1, $operator, $column2, $connector = 'AND')
+	public function On($column1, $operator, $column2, $connector = 'AND')
 	{
 		// TODO: Should probably allow for QxQuery objects here..
 		$this->clauses[] = compact('column1', 'operator', 'column2', 'connector');
@@ -56,14 +56,14 @@ class QxJoin extends QxQuery {
 	}
 
 	/**
-	 * Add an OR ON clause to the join.
+	 * Alias method for an OR ON clause
 	 *
 	 * @param  string  $column1
 	 * @param  string  $operator
 	 * @param  string  $column2
 	 * @return Join
 	 */
-	public function or_on($column1, $operator, $column2)
+	public function OrOn($column1, $operator, $column2)
 	{
 		return $this->on($column1, $operator, $column2, 'OR');
 	}
