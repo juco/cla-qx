@@ -1,6 +1,6 @@
 <?php
 $sub = QxQuery::I()
-	->select(array(
+	->Select(array(
 		'aa.id',
 		'aa.score',
 		'aa.question_version_id',
@@ -10,21 +10,21 @@ $sub = QxQuery::I()
 		'q.position' => 'q_position'
 		)
 	)
-	->from('oat_assurance_answer', 'aa')
-	->join('oat_assurance a', 'aa.assurance_id', '=', 'a.id', 'LEFT')
-	->join('oat_exercise e', 'e.id', '=', 'a.object_id', 'LEFT')
-	->join('groups g', 'e.region', '=', 'g.groupid', 'LEFT')
-	->join('oat_incident i', 'i.id', '=', 'a.object_id', 'LEFT')
-	->join('groups g1', 'i.region', '=', 'g1.groupid', 'LEFT')
-	->join('oat_question_set qs', 'aa.question_set_id', '=', 'qs.id', 'LEFT')
-	->join('oat_question q', 'qs.id', '=', 'q.question_set_id', 'LEFT')
-	->where('aa.score', '>', 0)
-	->where('a.status', '=', 1)
-	->where('a.date_completed', '>=', 20111122235900)
-	->where('a.date_completed', '<', 20121122235900)
-	->group_by(array('aa.id', 'qs.capability_bit'));
+	->From('oat_assurance_answer', 'aa')
+	->Join('oat_assurance a', 'aa.assurance_id', '=', 'a.id', 'LEFT')
+	->Join('oat_exercise e', 'e.id', '=', 'a.object_id', 'LEFT')
+	->Join('groups g', 'e.region', '=', 'g.groupid', 'LEFT')
+	->Join('oat_incident i', 'i.id', '=', 'a.object_id', 'LEFT')
+	->Join('groups g1', 'i.region', '=', 'g1.groupid', 'LEFT')
+	->Join('oat_question_set qs', 'aa.question_set_id', '=', 'qs.id', 'LEFT')
+	->Join('oat_question q', 'qs.id', '=', 'q.question_set_id', 'LEFT')
+	->Where('aa.score', '>', 0)
+	->Where('a.status', '=', 1)
+	->Where('a.date_completed', '>=', 20111122235900)
+	->Where('a.date_completed', '<', 20121122235900)
+	->GroupBy(array('aa.id', 'qs.capability_bit'));
 
-$q = QxQuery::I()->select(array(
+$q = QxQuery::I()->Select(array(
 		'SUM(IF(daw.score > 0,1,0))' => 'total',
 		'AVG(daw.score)' => 'avg',
 		'SUM(IF(daw.score = 1,1,0))' => 's_1',
@@ -39,10 +39,13 @@ $q = QxQuery::I()->select(array(
 		'qv.name',
 		'daw.question_version_id'
 		))
-	->from('oat_question_version', 'qv')
-	->joinQx($sub, 'qv.id', '=', 'daw.question_version_id', 'LEFT', 'daw')
-	->where_not_null('daw.id')
-	->group_by('qv.id');
+	->From('oat_question_version', 'qv')
+	->JoinQx($sub, 'qv.id', '=', 'daw.question_version_id', 'LEFT', 'daw')
+	->Where_not_null('daw.id')
+	->GroupBy('qv.id');
 
+// Print out the query..
 echo $q;
-my_print_r($q->get());
+
+// And execute it :-)
+my_print_r($q->Get());

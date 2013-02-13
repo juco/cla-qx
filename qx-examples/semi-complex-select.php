@@ -1,12 +1,12 @@
 <?php
 // A SELECT with JOIN's and nested WHERE clases
-$q = QxQuery::I()->select(array('c.*', 'COUNT(il.id)', 'attatchment.name' => 'attachment_name'))
-	->from('innovate_comments', 'c')
-	->join('innovate_likes', function($join) {
-		$join->on('aggregation', '=', 77);
-		$join->on('object_id', '=', 'c.id');
-	})
-	->join('innovate_attachment', 'innovate_attachment.id', 'c.attachment_id')
+$q = QxQuery::I()->Select(array('c.*', 'COUNT(il.id)' => 'like_count', 'attatchment.name' => 'attachment_name'))
+	->From('innovate_comments', 'c')
+	->Join('innovate_likes', function($join) {
+		$join->On('aggregation', '=', 77);
+		$join->On('object_id', '=', 'c.id');
+	}, null, null, 'LEFT')
+	->Join('innovate_attachment', 'innovate_attachment.id', 'c.attachment_id')
 	->WhereNested(function($query) {
 		$query->Where('c.aggregation', '=', 77);
 		$query->Where('c.object_id', '=', 1);
