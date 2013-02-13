@@ -13,7 +13,7 @@ How do I use it?
 At the root of your existing GIT repo, simply:
 > git submodule add git@github.com:juco/cla-qx.git intranet/common/qx
 
-You will now find it `$CLA_ROOT/intranet/common/qx`
+You will now find it at `$CLA_ROOT/intranet/common/qx`
 
 So, is it ready for production use?
 -------------------------
