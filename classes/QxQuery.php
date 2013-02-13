@@ -160,11 +160,13 @@ class QxQuery {
 	 * @param  string  $alias
 	 * @return QxQuery
 	 */
-	public function JoinQx($table, $column1, $operator = null, $column2 = null, $type = 'INNER', $alias = null)
+	public function JoinQx($table, $column1, $operator = null, $column2 = null, $type = 'INNER', $alias)
 	{
-
 		// Check if alias exists
-		if(!is_string($alias)) throw new Exception('joinQx:: Alias for a sub-query has not been specified!');
+		if(!is_string($alias)) 
+		{
+			throw new Exception('joinQx:: Alias for a sub-query has not been specified!');
+		}
 
 		if ($table instanceof QxQuery)
 		{
@@ -217,8 +219,13 @@ class QxQuery {
 
 	public function GroupBy($column)
 	{
-		if(is_array($column)) $this->groupings = array_merge((array)$this->groupings, $column);
-		if(is_string($column)) $this->groupings[] = $column;
+		if(is_array($column)) {
+			$this->groupings = array_merge((array)$this->groupings, $column);
+		}
+		elseif(is_string($column)) {
+			$this->groupings[] = $column;
+		}
+
 		return $this;
 	}
 
@@ -261,6 +268,11 @@ class QxQuery {
 			$rows[] = $row;
 		}
 		return $rows;
+	}
+
+	public function ToQuery(array $parts = array())
+	{
+		// TODO Transform into Cla Query Object
 	}
 
 	public function __toString()
